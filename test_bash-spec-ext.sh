@@ -119,9 +119,20 @@ describe "The array matcher" "$(
 
 describe "The array non-matcher" "$(
 
+  declare -a arr=(1 2 3 4)
+
   it "Reports an array does not contain a given value" "$(
-    declare -a arr=(1 2 3 4)
     expect "${arr[@]}" not to_contain 5
+  )"
+
+  context "When there is a failure" "$(
+
+    result="$( 
+      expect "${arr[@]}" not to_contain 4
+    )"
+
+    expect "$result" to_be "**** FAIL - expected: NOT 4 | actual: 1 2 3 4"
+
   )"
 
 )"
@@ -157,10 +168,48 @@ describe "The file mode matcher" "$(
 )"
 
 describe "The file mode non-matcher" "$(
+
   it "Reports a file does not have the given mode" "$(
     touch tempfile
     chmod u=rw,g=r,o=x tempfile
     expect tempfile not to_have_mode -rw-rw-rwx
     rm -f tempfile
   )"
+
 )"
+
+describe "Setting variables when nesting" "$(
+
+  test_var="first value"
+
+  it "Pulls a value into an it from the outer level" "$(
+    expect "$test_var" to_be "first value"
+  )"
+
+  context "When there is a nested context" "$(
+
+    it "Pulls a value into the inner it from the very outer level" "$(
+      expect "$test_var" to_be "first value"
+    )"
+
+  )"
+
+  context "When the context overwrites the value" "$(
+
+    test_var="second value"
+
+    it "Pulls the value into the inner it from the next level out" "$(
+      expect "$test_var" to_be "second value"
+    )"
+
+  )"
+
+  it "Does not get affected by values set in inner nesting earlier on" "$(
+    expect "$test_var" to_be "first value"
+  )"
+
+)"
+
+
+
+
