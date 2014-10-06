@@ -209,12 +209,24 @@ describe "The file mode matcher" "$(
 
 describe "The file mode non-matcher" "$(
 
+  touch tempfile
+  chmod u=rw,g=r,o=x tempfile
+
   it "Reports a file does not have the given mode" "$(
-    touch tempfile
-    chmod u=rw,g=r,o=x tempfile
     expect tempfile not to_have_mode -rw-rw-rwx
-    rm -f tempfile
   )"
+
+  context "When there is a failure" "$(
+
+    result="$( 
+      expect tempfile not to_have_mode -rw-r----x
+    )"
+
+    expect "$result" to_be "**** FAIL - expected: NOT -rw-r----x | actual: -rw-r----x"
+
+  )"
+
+  rm -f tempfile
 
 )"
 
