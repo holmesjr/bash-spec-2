@@ -53,13 +53,12 @@ function _incr_count_ {
 }
 
 function _array_contains_ {
-  _found_=false
   for elem in "${_actual_[@]}"; do
       if [[ "$elem" == "$_expected_" ]]; then
-          _found_=true
-          break
+          return 0
       fi
   done
+  return 1
 }
 
 function _negation_check_ {
@@ -130,8 +129,8 @@ function to_match {
 
 function to_contain {
     _expected_="$1"
-    _array_contains_ "$_expected_" "$_actual_"
-    if [ "$_found_" = true ]; then 
+    
+    if _array_contains_ "$_expected_" "$_actual_"; then 
         _pass_=true
     else
         _pass_=false
