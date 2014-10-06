@@ -145,6 +145,18 @@ describe "The file existence matcher" "$(
     rm -f tempfile
   )"
 
+  context "When there is a failure" "$(
+
+    rm -f tempfile
+
+    result="$( 
+      expect tempfile to_exist
+    )"
+
+    expect "$result" to_be "**** FAIL - expected: tempfile EXISTS | actual: File not found"
+
+  )"
+
 )"
 
 describe "The file non-existence matcher" "$(

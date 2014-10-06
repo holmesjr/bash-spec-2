@@ -144,6 +144,8 @@ function to_exist {
         _pass_=true
     else
         _pass_=false
+        _expected_="$_actual_ EXISTS"
+        _actual_="File not found"
     fi
     _negation_check_
 }
