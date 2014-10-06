@@ -142,6 +142,9 @@ function to_contain {
 function to_exist {
   if [[ -e "${_actual_[0]}" ]]; then
         _pass_=true
+        if [[ "$_negation_" == true ]]; then
+          _expected_="$_actual_ EXISTS"
+        fi
     else
         _pass_=false
         _expected_="$_actual_ EXISTS"

@@ -139,8 +139,9 @@ describe "The array non-matcher" "$(
 
 describe "The file existence matcher" "$(
   
+  echo 'test' > tempfile
+
   it "Reports a file exists" "$(
-    echo 'test' > tempfile
     expect tempfile to_exist
     rm -f tempfile
   )"
@@ -164,6 +165,18 @@ describe "The file non-existence matcher" "$(
   it "Reports a file does not exist" "$(
     rm -f tempfile
     expect tempfile not to_exist
+  )"
+
+  context "When there is a failure" "$(
+
+    echo 'test' > tempfile
+
+    result="$( 
+      expect tempfile not to_exist
+    )"
+
+    expect "$result" to_be "**** FAIL - expected: NOT tempfile EXISTS | actual: tempfile"
+
   )"
 
 )"
