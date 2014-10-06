@@ -143,7 +143,6 @@ describe "The file existence matcher" "$(
 
   it "Reports a file exists" "$(
     expect tempfile to_exist
-    rm -f tempfile
   )"
 
   context "When there is a failure" "$(
@@ -157,6 +156,8 @@ describe "The file existence matcher" "$(
     expect "$result" to_be "**** FAIL - expected: tempfile EXISTS | actual: File not found"
 
   )"
+
+  rm -f tempfile
 
 )"
 
@@ -179,16 +180,30 @@ describe "The file non-existence matcher" "$(
 
   )"
 
+  rm -f tempfile
+
 )"
 
 describe "The file mode matcher" "$(
   
+  touch tempfile
+  chmod u=rw,g=r,o=x tempfile
+
   it "Reports a file has the given mode" "$(
-    touch tempfile
-    chmod u=rw,g=r,o=x tempfile
     expect tempfile to_have_mode -rw-r----x
-    rm -f tempfile
   )"
+
+  context "When there is a failure" "$(
+
+    result="$( 
+      expect tempfile to_have_mode -rw-rw-rwx
+    )"
+
+    expect "$result" to_be "**** FAIL - expected: -rw-rw-rwx | actual: -rw-r----x"
+
+  )"
+
+  rm -f tempfile
 
 )"
 
