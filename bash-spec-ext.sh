@@ -1,6 +1,8 @@
 #! /bin/bash
 
-. ./bash-spec.sh
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/bash-spec.sh"
 
 function it {
   echo "  $1"
@@ -10,13 +12,11 @@ function it {
 function describe {
   echo "$1"
   echo "$2"
-  
 }
 
 function context {
   echo "$1"
   echo "$2"
-  
 }
 
 function pass {

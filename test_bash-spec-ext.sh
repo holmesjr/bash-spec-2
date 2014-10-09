@@ -1,6 +1,8 @@
 #!  /bin/bash
 
-. ./bash-spec-ext.sh
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/bash-spec-ext.sh"
 
 describe "The equality test" "$(
   
@@ -261,7 +263,3 @@ describe "Setting variables when nesting" "$(
   )"
 
 )"
-
-
-
-
