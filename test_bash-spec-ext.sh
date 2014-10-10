@@ -232,6 +232,60 @@ describe "The file mode non-matcher" "$(
 
 )"
 
+describe "The exit mode matcher" "$(
+
+  function return_boolean {
+    if [[ $1 == "true" ]]; then
+      return 0
+    fi
+    return 1
+  }
+
+  it "Reports truth when the exit code of the following command is 0" "$(
+    expect to_be_true return_boolean true
+  )"
+
+  context "When there is a failure" "$(
+
+    result="$( 
+      expect to_be_true return_boolean false
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: return_boolean false IS TRUE | actual: return_boolean false IS FALSE"
+    )"
+
+  )"
+
+)"
+
+describe "The exit mode non matcher" "$(
+
+  function return_boolean {
+    if [[ $1 == "true" ]]; then
+      return 0
+    fi
+    return 1
+  }
+
+  it "Reports false when the exit code of the following command is 1" "$(
+    expect not to_be_true return_boolean false
+  )"
+
+  context "When there is a failure" "$(
+
+    result="$( 
+      expect not to_be_true return_boolean true
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT return_boolean true IS TRUE | actual: return_boolean true IS TRUE"
+    )"
+
+  )"
+
+)"
+
 describe "Setting variables when nesting" "$(
 
   test_var="first value"

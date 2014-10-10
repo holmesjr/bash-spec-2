@@ -118,6 +118,18 @@ function to_be {
     _negation_check_
 }
 
+function to_be_true {
+  _expected_="$@ IS TRUE"
+  if $@; then
+    _pass_=true
+    _actual_="$@ IS TRUE"
+  else
+    _pass=false
+    _actual_="$@ IS FALSE"
+  fi
+  _negation_check_
+}
+
 function to_match {
     _expected_="$1"
     if [[ "${_actual_[0]}" =~ $_expected_ ]]; then 
