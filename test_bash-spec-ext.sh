@@ -26,14 +26,12 @@ describe "The equality test" "$(
 
   context "When there is a failure" "$(
 
+    result="$( 
+      expect "Test text" to_be "Something else"
+    )"
+
     it "Reports the actual and expected correctly" "$(
-
-      result="$( 
-        expect "Test text" to_be "Something else"
-      )"
-
       expect "$result" to_be "**** FAIL - expected: Something else | actual: Test text"
-
     )"
 
   )"
@@ -50,10 +48,12 @@ describe "The inequality test" "$(
   context "When there is a failure" "$(
 
     result="$( 
-        expect "1" not to_be "1"
-      )"
+      expect "1" not to_be "1"
+    )"
 
-    expect "$result" to_be "**** FAIL - expected: NOT 1 | actual: 1"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT 1 | actual: 1"
+    )"
 
   )"
 
@@ -73,7 +73,9 @@ describe "The regex matcher" "$(
       expect "$str" to_match wibble$
     )"
 
-    expect "$result" to_be "**** FAIL - expected: wibble$ | actual: one fine day"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: wibble$ | actual: one fine day"
+    )"
 
   )"
 
@@ -93,7 +95,9 @@ describe "The regex non-matcher" "$(
       expect "$str" not to_match night$
     )"
 
-    expect "$result" to_be "**** FAIL - expected: NOT night$ | actual: one fine night"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT night$ | actual: one fine night"
+    )"
 
   )"
 
@@ -113,7 +117,9 @@ describe "The array matcher" "$(
       expect "${arr[@]}" to_contain 5
     )"
 
-    expect "$result" to_be "**** FAIL - expected: 5 | actual: 1 2 3 4"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: 5 | actual: 1 2 3 4"
+    )"
 
   )"
 
@@ -133,7 +139,9 @@ describe "The array non-matcher" "$(
       expect "${arr[@]}" not to_contain 4
     )"
 
-    expect "$result" to_be "**** FAIL - expected: NOT 4 | actual: 1 2 3 4"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT 4 | actual: 1 2 3 4"
+    )"
 
   )"
 
@@ -155,7 +163,9 @@ describe "The file existence matcher" "$(
       expect tempfile to_exist
     )"
 
-    expect "$result" to_be "**** FAIL - expected: tempfile EXISTS | actual: File not found"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: tempfile EXISTS | actual: File not found"
+    )"
 
   )"
 
@@ -178,7 +188,9 @@ describe "The file non-existence matcher" "$(
       expect tempfile not to_exist
     )"
 
-    expect "$result" to_be "**** FAIL - expected: NOT tempfile EXISTS | actual: tempfile"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT tempfile EXISTS | actual: tempfile"
+    )"
 
   )"
 
@@ -201,7 +213,9 @@ describe "The file mode matcher" "$(
       expect tempfile to_have_mode -rw-rw-rwx
     )"
 
-    expect "$result" to_be "**** FAIL - expected: -rw-rw-rwx | actual: -rw-r----x"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: -rw-rw-rwx | actual: -rw-r----x"
+    )"
 
   )"
 
@@ -224,7 +238,9 @@ describe "The file mode non-matcher" "$(
       expect tempfile not to_have_mode -rw-r----x
     )"
 
-    expect "$result" to_be "**** FAIL - expected: NOT -rw-r----x | actual: -rw-r----x"
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT -rw-r----x | actual: -rw-r----x"
+    )"
 
   )"
 
