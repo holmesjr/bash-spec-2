@@ -74,6 +74,7 @@ The available matchers are:
 - `to_contain` (array element equality)
 - `to_exist` (file existence)
 - `to_have_mode` (file perrmissions matching)
+- `to_be_true` (exit mode matcher)
 
 Each matcher has a negated mode (`not to_be`, `not to_match` etc)
 
@@ -85,7 +86,5 @@ The [bash-spec test suite](https://git.realestate.com.au/james-holmes/bash-spec/
 
 # TODO list
 
-- A proper exit mode based on test pass/fail is necessary before it can be used in CI
-- It would be nice to get the pass, failure and total test counts working again
 - An equivalent for let blocks (memoized, lazy evaluated) might be useful
 - Proper nesting of the output would be cool
