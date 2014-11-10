@@ -2,7 +2,7 @@
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-. "$DIR/bash-spec-ext.sh"
+. "$DIR/bash-spec.sh"
 
 describe "The equality test" "$(
   

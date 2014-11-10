@@ -73,7 +73,7 @@ The available matchers are:
 - `to_match` (regex matching)
 - `to_contain` (array element equality)
 - `to_exist` (file existence)
-- `to_have_mode` (file perrmissions matching)
+- `to_have_mode` (file permissions matching)
 - `to_be_true` (exit mode matcher)
 
 Each matcher has a negated mode (`not to_be`, `not to_match` etc)

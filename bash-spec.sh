@@ -2,55 +2,38 @@
 #==================================================================================
 # BDD-style testing framework for bash scripts.
 #
-# print_header "name"                             Echoes title line with 'name'
-# print_trailer                                   Echoes # of examples, passed, failed
-# it "description"                                Description of example
 # expect variable [not] to_be value               Compare scalar values for equality
 # expect variable [not] to_match regex            Regex match
 # expect array [not] to_contain value             Look for a value in an array
 # expect filename [not] to_exist                  Verify file existence
 # expect filename [not] to_have_mode modestring   Verify file mode (permissions)
+# expect [not] to_be_true condition               Verify exit mode as boolean
 #
 # Author: Dave Nicolette
 # Date: 29 Jul 2014
 # Modified by REA Group 2014
 #==================================================================================
-_count_=0
-_passed_=0
-_failed_=0
 
-function show_help {
-    echo
-    echo 'bash_spec usage: Call these functions from your test script'
-    echo 'print_header "name"                             Echoes title line with "name"'
-    echo 'print_trailer                                   Echoes # of examples, passed, failed'
-    echo 'it "description"                                Description of example'
-    echo 'expect variable [not] to_be value               Compare scalar values for equality'
-    echo 'expect variable [not] to_match regex            Regex match'
-    echo 'expect array [not] to_contain value             Look for a value in an array'
-    echo 'expect filename [not] to_exist                  Verify file existence'
-    echo 'expect filename [not] to_have_mode modestring   Verify file mode (can pass regex)'
-    echo
-}
+result_file=$RANDOM
 
+exec 6<&1
+exec > "$result_file"
 
-
-function print_header {
-    echo '============================================================================='
-    echo "Examples for $1"
-    echo
-}
-
-function print_trailer {
-    echo
-    echo "$_count_ examples were run"
-    echo "$_passed_ passed"
-    echo "$_failed_ failed"
-    echo '============================================================================='
-}
-
-function _incr_count_ {
-    (( _count_+=1 )) 
+function output_results {
+  exec 1>&6 6>&-
+  local results=$( cat "$result_file" )
+  rm "$result_file"
+  local passes=$( echo "$results" | grep "PASS" | wc -l )
+  local fails=$( echo "$results" | grep "\*\*\*\* FAIL" | wc -l )
+  echo "$results"
+  echo "--SUMMARY--"
+  echo "$passes PASSED"
+  echo "$fails FAILED"
+  if [[ $fails -gt 0 ]]; then
+    exit 1
+  else
+    exit 0
+  fi
 }
 
 function _array_contains_ {
@@ -79,17 +62,27 @@ function _negation_check_ {
     fi
 }
 
+function it {
+  echo "  $1"
+  echo "    $2"
+}
+
+function describe {
+  echo "$1"
+  echo "$2"
+}
+
+function context {
+  echo "$1"
+  echo "$2"
+}
+
 function pass {
-  echo "     PASS: it $_it_"
+  echo "     PASS"
 }
 
 function fail {
-  echo "**** FAIL: it $_it_ | $expected: ${_expected_[@]} | actual: $_actual_"
-}
-
-function it {
-  _it_="$1"
-    _incr_count_
+  echo "**** FAIL - expected:$( if [[ "$_negation_" == true ]]; then echo " NOT"; fi; ) $_expected_ | actual: ${_actual_[@]}"
 }
 
 function expect {
@@ -205,3 +198,5 @@ while true; do
     * ) break ;;
   esac
 done
+
+trap output_results EXIT
