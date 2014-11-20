@@ -82,7 +82,7 @@ Each matcher has a negated mode (`not to_be`, `not to_match` etc)
 
 You'll have noticed that the command substitution syntax is used. This provides something similar to independent blocks, since each "$( )" spawns a subshell that doesn't affect other subshells or the parent shell. Each subshell also gets a copy of the environment in the parent shell, making a "before" syntax unnecessary.
 
-The [bash-spec test suite](https://git.realestate.com.au/james-holmes/bash-spec/blob/master/test_bash-spec-ext.sh) has some good examples of this.
+The [bash-spec test suite](https://github.com/realestate-com-au/bash-spec-2/blob/master/test_bash-spec.sh) has some good examples of this.
 
 # TODO list
 
