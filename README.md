@@ -86,7 +86,7 @@ The [bash-spec test suite](https://github.com/realestate-com-au/bash-spec-2/blob
 
 ### Mocks
 
-bash-spec-2 works habd in hand with [stub.sh](https://github.com/jimeh/stub.sh) to allow for mocking. You can do things like calling AWS via chains of your own mathods to build up the command line and test it with a stub. See the stub.sh docs for details or see examples in [the wiki](https://github.com/realestate-com-au/bash-spec-2/wiki).
+bash-spec-2 works hand in hand with [stub.sh](https://github.com/jimeh/stub.sh) to allow for mocking. You can do things like calling AWS via chains of your own methods to build up the command line and test it with a stubbed "aws." See the stub.sh docs for details or see examples in [the wiki](https://github.com/realestate-com-au/bash-spec-2/wiki).
 
 # TODO list
 
