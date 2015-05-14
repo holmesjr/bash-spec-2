@@ -84,6 +84,10 @@ You'll have noticed that the command substitution syntax is used. This provides 
 
 The [bash-spec test suite](https://github.com/realestate-com-au/bash-spec-2/blob/master/test_bash-spec.sh) has some good examples of this.
 
+### Mocks
+
+bash-spec-2 works habd in hand with [stub.sh](https://github.com/jimeh/stub.sh) to allow for mocking. You can do things like calling AWS via chains of your own mathods to build up the command line and test it with a stub. See the stub.sh docs for details or see examples in [the wiki](./wiki).
+
 # TODO list
 
 - An equivalent for let blocks (memoized, lazy evaluated) might be useful
