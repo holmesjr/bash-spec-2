@@ -12,39 +12,39 @@ This is a modified version of bash-spec from https://github.com/neopragma/bash-s
 
 ## Installation
 
-Just put the bash-spec.sh and bash-spec-ext.sh files in your project in a folder of your choice.
+Just put the bash-spec.sh file in your project in a folder of your choice.
 
 ## Writing tests
 
-Your test file (a bash script you'll write) needs to source bash-spec-ext.sh:
+Your test file (a bash script you'll write) needs to source bash-spec.sh:
 
-    . ./path-to-files/bash-spec-ext.sh
+    . ./path-to-files/bash-spec.sh
 
 Then you can describe a thing and how you expect it to behave:
 
 ```
-describe "The word Penguin" "$( 
-  
+describe "The word Penguin" "$(
+
   word="Penguin"
-  
+
   it "Is seven letters long" "$(
     expect "${#word}" to_be "7"
   )"
-  
+
   it "Begins with the capital letter P" "$(
     expect "${word:0:1}" to_be "P"
   )"
-  
+
   context "When converted to lowercase" "$(
-  
+
     word=$( echo $word | tr '[:upper:]' '[:lower:]' )
-    
+
     it "Begins with the lower case letter p" "$(
       expect "${word:0:1}" to_be "p"
     )"
-    
+
   )"
-  
+
 )"
 ```
 
