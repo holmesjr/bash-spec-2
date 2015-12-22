@@ -51,8 +51,8 @@ function _negation_check_ {
             _pass_=false
         else
             _pass_=true
-        fi      
-    fi  
+        fi
+    fi
     if [[ "$_pass_" == true ]]; then
         (( _passed_+=1 ))
         pass
@@ -82,7 +82,7 @@ function pass {
 }
 
 function fail {
-  echo "**** FAIL - expected:$( if [[ "$_negation_" == true ]]; then echo " NOT"; fi; ) $_expected_ | actual: ${_actual_[@]}"
+  echo "**** FAIL - expected:$( if [[ "$_negation_" == true ]]; then echo " NOT"; fi; ) '$_expected_' | actual: '${_actual_[@]}'"
 }
 
 function expect {
@@ -103,7 +103,7 @@ function not {
 
 function to_be {
     _expected_="$1"
-    if [[ "${_actual_[0]}" == "$_expected_" ]]; then 
+    if [[ "${_actual_[0]}" == "$_expected_" ]]; then
         _pass_=true
     else
         _pass_=false
@@ -125,7 +125,7 @@ function to_be_true {
 
 function to_match {
     _expected_="$1"
-    if [[ "${_actual_[0]}" =~ $_expected_ ]]; then 
+    if [[ "${_actual_[0]}" =~ $_expected_ ]]; then
         _pass_=true
     else
         _pass_=false
@@ -135,8 +135,8 @@ function to_match {
 
 function to_contain {
     _expected_="$1"
-    
-    if _array_contains_ "$_expected_" "$_actual_"; then 
+
+    if _array_contains_ "$_expected_" "$_actual_"; then
         _pass_=true
     else
         _pass_=false
@@ -158,14 +158,14 @@ function to_exist {
     _negation_check_
 }
 
-function to_have_mode { 
+function to_have_mode {
     _filename_="${_actual_[0]}"
     _expected_="$1"
     if [[ -e "$_filename_" ]]; then
       _fullname_="$_filename_"
     else
       _fullname_="$(which $_filename_)"
-    fi  
+    fi
     if [[ -e "$_fullname_" ]]; then
       _os_=$(uname -a | cut -f 1 -d ' ')
       if [[ $_os_ == Linux ]]; then
@@ -181,7 +181,7 @@ function to_have_mode {
       _negation_check_
     else
       echo "File not found: $_fullname_"
-    fi        
+    fi
 }
 
 TEMP=`getopt -o h --long help \

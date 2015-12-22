@@ -5,12 +5,12 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/bash-spec.sh"
 
 describe "The equality test" "$(
-  
+
   context "When a single value is passed" "$(
 
     it "Reports two scalar values are equal" "$(
       one="1"
-      expect $one to_be 1   
+      expect $one to_be 1
     )"
 
   )"
@@ -19,19 +19,19 @@ describe "The equality test" "$(
 
     it "Reports two scalar values are equal" "$(
       string="This is a string."
-      expect "$string" to_be "This is a string." 
+      expect "$string" to_be "This is a string."
     )"
 
   )"
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect "Test text" to_be "Something else"
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: Something else | actual: Test text"
+      expect "$result" to_be "**** FAIL - expected: 'Something else' | actual: 'Test text'"
     )"
 
   )"
@@ -39,7 +39,7 @@ describe "The equality test" "$(
 )"
 
 describe "The inequality test" "$(
-  
+
   it "Reports two scalar values are unequal" "$(
     one="1"
     expect $one not to_be 2
@@ -47,12 +47,12 @@ describe "The inequality test" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect "1" not to_be "1"
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT 1 | actual: 1"
+      expect "$result" to_be "**** FAIL - expected: NOT '1' | actual: '1'"
     )"
 
   )"
@@ -74,7 +74,7 @@ describe "The regex matcher" "$(
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: wibble$ | actual: one fine day"
+      expect "$result" to_be "**** FAIL - expected: 'wibble$' | actual: 'one fine day'"
     )"
 
   )"
@@ -82,7 +82,7 @@ describe "The regex matcher" "$(
 )"
 
 describe "The regex non-matcher" "$(
-  
+
   str="one fine night"
 
   it "Reports regex mismatch" "$(
@@ -91,12 +91,12 @@ describe "The regex non-matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect "$str" not to_match night$
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT night$ | actual: one fine night"
+      expect "$result" to_be "**** FAIL - expected: NOT 'night$' | actual: 'one fine night'"
     )"
 
   )"
@@ -113,12 +113,12 @@ describe "The array matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect "${arr[@]}" to_contain 5
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: 5 | actual: 1 2 3 4"
+      expect "$result" to_be "**** FAIL - expected: '5' | actual: '1 2 3 4'"
     )"
 
   )"
@@ -135,12 +135,12 @@ describe "The array non-matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect "${arr[@]}" not to_contain 4
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT 4 | actual: 1 2 3 4"
+      expect "$result" to_be "**** FAIL - expected: NOT '4' | actual: '1 2 3 4'"
     )"
 
   )"
@@ -148,7 +148,7 @@ describe "The array non-matcher" "$(
 )"
 
 describe "The file existence matcher" "$(
-  
+
   echo 'test' > tempfile
 
   it "Reports a file exists" "$(
@@ -159,12 +159,12 @@ describe "The file existence matcher" "$(
 
     rm -f tempfile
 
-    result="$( 
+    result="$(
       expect tempfile to_exist
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: tempfile EXISTS | actual: File not found"
+      expect "$result" to_be "**** FAIL - expected: 'tempfile EXISTS' | actual: 'File not found'"
     )"
 
   )"
@@ -174,7 +174,7 @@ describe "The file existence matcher" "$(
 )"
 
 describe "The file non-existence matcher" "$(
-  
+
   it "Reports a file does not exist" "$(
     rm -f tempfile
     expect tempfile not to_exist
@@ -184,12 +184,12 @@ describe "The file non-existence matcher" "$(
 
     echo 'test' > tempfile
 
-    result="$( 
+    result="$(
       expect tempfile not to_exist
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT tempfile EXISTS | actual: tempfile"
+      expect "$result" to_be "**** FAIL - expected: NOT 'tempfile EXISTS' | actual: 'tempfile'"
     )"
 
   )"
@@ -199,7 +199,7 @@ describe "The file non-existence matcher" "$(
 )"
 
 describe "The file mode matcher" "$(
-  
+
   touch tempfile
   chmod u=rw,g=r,o=x tempfile
 
@@ -209,12 +209,12 @@ describe "The file mode matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect tempfile to_have_mode -rw-rw-rwx
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: -rw-rw-rwx | actual: -rw-r----x"
+      expect "$result" to_be "**** FAIL - expected: '-rw-rw-rwx' | actual: '-rw-r----x'"
     )"
 
   )"
@@ -234,12 +234,12 @@ describe "The file mode non-matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect tempfile not to_have_mode -rw-r----x
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT -rw-r----x | actual: -rw-r----x"
+      expect "$result" to_be "**** FAIL - expected: NOT '-rw-r----x' | actual: '-rw-r----x'"
     )"
 
   )"
@@ -263,12 +263,12 @@ describe "The exit mode matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect to_be_true return_boolean false
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: return_boolean false IS TRUE | actual: return_boolean false IS FALSE"
+      expect "$result" to_be "**** FAIL - expected: 'return_boolean false IS TRUE' | actual: 'return_boolean false IS FALSE'"
     )"
 
   )"
@@ -290,12 +290,12 @@ describe "The exit mode non matcher" "$(
 
   context "When there is a failure" "$(
 
-    result="$( 
+    result="$(
       expect not to_be_true return_boolean true
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: NOT return_boolean true IS TRUE | actual: return_boolean true IS TRUE"
+      expect "$result" to_be "**** FAIL - expected: NOT 'return_boolean true IS TRUE' | actual: 'return_boolean true IS TRUE'"
     )"
 
   )"
