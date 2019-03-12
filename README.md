@@ -1,3 +1,10 @@
+New in 2.1
+==========
+# 2.1 Supporting other formats
+was: describe "title" "$( ... )"
+new: describe "title" && { ...  }
+new: describe "title" && ( ... )
+
 bash-spec
 =========
 
@@ -92,3 +99,4 @@ bash-spec-2 works hand in hand with [stub.sh](https://github.com/jimeh/stub.sh) 
 
 - An equivalent for let blocks (memoized, lazy evaluated) might be useful
 - Proper nesting of the output would be cool
+
