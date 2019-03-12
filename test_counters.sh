@@ -1,5 +1,5 @@
 #! /bin/bash
-. ./bash-spec-ext.sh
+. ./bash-spec.sh
 
 describe "A simple test" "$(
   
