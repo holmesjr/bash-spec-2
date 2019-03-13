@@ -1,16 +1,29 @@
 New in 2.1
 ==========
-#### 2.1 Supporting other formats
+#### Supporting other formats
 ```
 old format: describe "title" "$( ... )"
 alt format: describe "title" && { ...  } (most readable but predictably fails one test)
-alt format2: describe "title" && ( ... )
-
+alt format2: describe "title" && ( ... ) (compromise?)
+```
+#### Assertions on expressions
+```
 [[ some_expression ]]
 should_succeed
 [[ some_expression ]]
 should_fail
 ```
+
+#### Cleaner support for arrays - pass by reference
+
+```
+expect_var varref to_be 5
+expect_array arrayname to_contain 5
+```
+
+#### Unofficial bash strict mode
+
+http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 bash-spec
 =========
