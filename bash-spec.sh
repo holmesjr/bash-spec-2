@@ -22,6 +22,11 @@
 #==================================================================================
 # XXX: should use mktemp for proper random file name -- (GM)
 
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+shopt -s nullglob # make sure globs are empty arrays if nothing is foound
+
 result_file="$RANDOM"
 _passed_=0
 _failed_=0
@@ -90,6 +95,7 @@ function fail {
 function should_succeed {
   _actual_=$?
   _expected_=0
+  _negation_=false
   _pass_=false
   [[ $_actual_ == $_expected_ ]] && _pass_=true
   _expected_="0(success)"
@@ -100,6 +106,7 @@ function should_succeed {
 function should_fail {
   _actual_=$?
   _expected_=0
+  _negation_=false
   _pass_=true
   [[ $_actual_ == $_expected_ ]] && _pass_=false
   _expected_="NOT 0(fail)"
