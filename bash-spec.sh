@@ -1,20 +1,27 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #==================================================================================
 # BDD-style testing framework for bash scripts.
 #
 # expect variable [not] to_be value               Compare scalar values for equality
 # expect variable [not] to_match regex            Regex match
 # expect array [not] to_contain value             Look for a value in an array
+# expect_array arrayname [not] to_contain value   Look for a value in an array (by ref)
+# expect_var variablename [not] to_contain value  Look for a value in a variable (by ref)
 # expect filename [not] to_exist                  Verify file existence
 # expect filename [not] to_have_mode modestring   Verify file mode (permissions)
 # expect [not] to_be_true condition               Verify exit mode as boolean
+# [[ some_expression ]]
+# should_succeed
+# [[ some_expression ]]
+# should_fail
 #
 # Author: Dave Nicolette
 # Date: 29 Jul 2014
 # Modified by REA Group 2014
+# Modified by keithy@consultant.com 03/2019
 #==================================================================================
-
 # XXX: should use mktemp for proper random file name -- (GM)
+
 result_file="$RANDOM"
 _passed_=0
 _failed_=0
@@ -58,15 +65,18 @@ function _negation_check_ {
 }
 
 function it {
-  printf '  %s\n    %s\n' "$1" "$2"
+  echo "  $1"
+  [ -z ${2+x} ] || echo "    $2"
 }
 
 function describe {
-  printf '%s\n%s\n' "$1" "$2"
+  echo "$1"
+  [ -z ${2+x} ] || echo "$2"
 }
 
 function context {
-  printf '%s\n%s\n' "$1" "$2"
+  echo "$1"
+  [ -z ${2+x} ] || echo "$2"
 }
 
 function pass {
@@ -77,12 +87,53 @@ function fail {
   echo "**** FAIL - expected:$( if [[ "$_negation_" == true ]]; then echo ' NOT'; fi; ) '$_expected_' | actual: '${_actual_[@]}'"
 }
 
+function should_succeed {
+  _actual_=$?
+  _expected_=0
+  _pass_=false
+  [[ $_actual_ == $_expected_ ]] && _pass_=true
+  _expected_="0(success)"
+  _actual_="$_actual_(failed)"
+  _negation_check_
+}
+
+function should_fail {
+  _actual_=$?
+  _expected_=0
+  _pass_=true
+  [[ $_actual_ == $_expected_ ]] && _pass_=false
+  _expected_="NOT 0(fail)"
+  _actual_="0(succeeded)"
+  _negation_check_
+}
+
 function expect {
   _expected_=
   _negation_=false
+  _pass_=false
   declare -a _actual_
   until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
     _actual_+=("$1")
+    shift
+  done
+  "$@"
+}
+
+function expect_var {
+  _expected_=
+  _negation_=false
+  declare -n _actual_=$1
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+    shift
+  done
+  "$@"
+}
+
+function expect_array {
+  _expected_=
+  _negation_=false
+  declare -n _actual_=$1
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
     shift
   done
   "$@"

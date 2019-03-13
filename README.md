@@ -1,9 +1,16 @@
 New in 2.1
 ==========
-# 2.1 Supporting other formats
-was: describe "title" "$( ... )"
-new: describe "title" && { ...  }
-new: describe "title" && ( ... )
+#### 2.1 Supporting other formats
+```
+old format: describe "title" "$( ... )"
+alt format: describe "title" && { ...  } (most readable but predictably fails one test)
+alt format2: describe "title" && ( ... )
+
+[[ some_expression ]]
+should_succeed
+[[ some_expression ]]
+should_fail
+```
 
 bash-spec
 =========
