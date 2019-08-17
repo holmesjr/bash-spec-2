@@ -1,6 +1,6 @@
-New in 2.1
-==========
-#### Supporting other formats
+New for 2.1
+===========
+#### Supporting other coding styles/formats
 ```
 old format: describe "title" "$( ... )"
 alt format: describe "title" && { ...  } (most readable but predictably fails one test)
@@ -13,11 +13,10 @@ should_succeed
 [[ some_expression ]]
 should_fail
 ```
-
 #### Cleaner support for arrays - pass by reference
 
 ```
-expect_var varref to_be 5
+expect_var varname to_be 5
 expect_array arrayname to_contain 5
 ```
 
@@ -92,7 +91,8 @@ When converted to lowercase
 
 ### Matchers
 
-Most of the matchers from the original bash-spec survived. The to_be_installed matcher went away, because it didn't work and wasn't super useful. It can be resurrected if someone cares enough.
+Most of the matchers from the original bash-spec survived. The to_be_installed matcher went away, 
+because it didn't work and wasn't super useful. It can be resurrected if someone cares enough.
 
 The available matchers are:
 
@@ -107,7 +107,10 @@ Each matcher has a negated mode (`not to_be`, `not to_match` etc)
 
 ### Blocks and the notably absent "before" syntax
 
-You'll have noticed that the command substitution syntax is used. This provides something similar to independent blocks, since each "$( )" spawns a subshell that doesn't affect other subshells or the parent shell. Each subshell also gets a copy of the environment in the parent shell, making a "before" syntax unnecessary.
+You'll have noticed that the command substitution syntax is used. 
+This provides something similar to independent blocks, since each "$( )" spawns a subshell that doesn't 
+affect other subshells or the parent shell. Each subshell also gets a copy of the environment in the parent shell, 
+making a "before" syntax unnecessary.
 
 The [bash-spec test suite](https://github.com/realestate-com-au/bash-spec-2/blob/master/test_bash-spec.sh) has some good examples of this.
 

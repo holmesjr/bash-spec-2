@@ -64,6 +64,15 @@ describe "The equality test" "$(
 
   )"
 
+  context "When a single value is passed (by ref)" "$(
+
+    it "Reports two scalar values are equal" "$(
+      one="1"
+      expect_var one to_be 1
+    )"
+
+  )"
+
   context "When a multi word value is passed" "$(
 
     it "Reports two scalar values are equal" "$(

@@ -1,38 +1,50 @@
 #!/usr/bin/env bash
-#==================================================================================
-# BDD-style testing framework for bash scripts.
-#
-# expect variable [not] to_be value               Compare scalar values for equality
-# expect variable [not] to_match regex            Regex match
-# expect array [not] to_contain value             Look for a value in an array
-# expect_array arrayname [not] to_contain value   Look for a value in an array (by ref)
-# expect_var variablename [not] to_contain value  Look for a value in a variable (by ref)
-# expect filename [not] to_exist                  Verify file existence
-# expect filename [not] to_have_mode modestring   Verify file mode (permissions)
-# expect [not] to_be_true condition               Verify exit mode as boolean
-# [[ some_expression ]]
-# should_succeed
-# [[ some_expression ]]
-# should_fail
-#
+##==================================================================================
+## BDD-style testing framework for bash scripts.
+##.
+## expect variable [not] to_be value               Compare scalar values for equality
+## expect variable [not] to_match regex            Regex match
+## expect array [not] to_contain value             Look for a value in an array
+## expect_array arrayname [not] to_contain value   Look for a value in an array (by ref)
+## expect_var variablename [not] to_contain value  Look for a value in a variable (by ref)
+## expect filename [not] to_exist                  Verify file existence
+## expect filename [not] to_have_mode modestring   Verify file mode (permissions)
+## expect [not] to_be_true condition               Verify exit mode as boolean
+## [[ some_expression ]]
+## should_succeed
+## [[ some_expression ]]
+## should_fail
+##.
+# Original Author: Dave Nicolette
+# Version 1.0.0 29 Jul 2014
+# Release
 # Author: Dave Nicolette
-# Date: 29 Jul 2014
+# License: MIT 
+# (GPL3 licence added to bash-spec after the bash-spec-2 fork)
 # Modified by REA Group 2014
+# License: MIT
 # Modified by keithy@consultant.com 03/2019
+# License: MIT
 #==================================================================================
-# XXX: should use mktemp for proper random file name -- (GM)
-
+ 
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
 set -uo pipefail
 IFS=$'\n\t'
-shopt -s nullglob # make sure globs are empty arrays if nothing is foound
+shopt -s nullglob # make sure globs are empty arrays if nothing is found
 
-result_file="$RANDOM"
+result_file=$(mktemp)
+
 _passed_=0
 _failed_=0
 
 exec 6<&1
 exec > "$result_file"
+
+function show_help {
+    exec 1>&6 6>&-
+    rm -f -- "$result_file"
+    grep "^##"  $BASH_SOURCE | sed 's/^##.//'
+}
 
 function output_results {
   exec 1>&6 6>&-
@@ -218,6 +230,12 @@ function to_have_mode {
   _negation_check_
 }
 
+# pattern - user supplied return variable name
+function capture {
+	mapfile -t "${!#}" < "$1"
+}
+ 
+#kph asks why?
 TEMP="$(getopt -o h --long help \
              -n 'javawrap' -- $@)"
 
@@ -227,9 +245,9 @@ eval set -- "$TEMP"
 
 while true; do
   case "$1" in
-    -h | --help ) show_help; exit 0 ;;
-    -- ) shift; break ;;
-    * ) break ;;
+    h | help ) show_help; exit 0 ;;
+    -- ) shift  ;;
+    * ) shift; break ;;
   esac
 done
 

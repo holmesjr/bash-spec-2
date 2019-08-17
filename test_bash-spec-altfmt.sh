@@ -63,14 +63,21 @@ describe "The equality test" && {
     }
 
   }
+  
+  context "When a single value is passed (by ref)" && {
 
+    it "Reports two scalar values are equal" && {
+      one="1"
+      expect_var one to_be 1
+    }
+  }
+  
   context "When a multi word value is passed" && {
 
     it "Reports two scalar values are equal" && {
       string="This is a string."
       expect "$string" to_be "This is a string."
     }
-
   }
 
   context "When there is a failure" && {
@@ -82,9 +89,7 @@ describe "The equality test" && {
     it "Reports the actual and expected correctly" && {
       expect "$result" to_be "**** FAIL - expected: 'Something else' | actual: 'Test text'"
     }
-
   }
-
 }
 
 describe "The inequality test" && {
@@ -103,9 +108,7 @@ describe "The inequality test" && {
     it "Reports the actual and expected correctly" && {
       expect "$result" to_be "**** FAIL - expected: NOT '1' | actual: '1'"
     }
-
   }
-
 }
 
 describe "The regex matcher" && {
@@ -125,9 +128,7 @@ describe "The regex matcher" && {
     it "Reports the actual and expected correctly" && {
       expect "$result" to_be "**** FAIL - expected: 'wibble$' | actual: 'one fine day'"
     }
-
   }
-
 }
 
 describe "The regex non-matcher" && {
