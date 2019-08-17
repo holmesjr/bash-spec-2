@@ -1,9 +1,14 @@
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![Build Status](https://travis-ci.com/keithy/bash-spec-2.svg?branch=master)](https://travis-ci.com/keithy/bash-spec-2)
+[![GitHub issues](https://img.shields.io/github/issues/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/issues)
+[![Latest Version](https://img.shields.io/github/release/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/releases)
+
 New for 2.1
 ===========
 #### Supporting other coding styles/formats
 ```
 old format: describe "title" "$( ... )"
-alt format: describe "title" && { ...  } (most readable but predictably fails one test)
+alt format: describe "title" && { ...  } (most readable but variables are not locally scoped)
 alt format2: describe "title" && ( ... ) (compromise?)
 ```
 #### Assertions on expressions
@@ -13,7 +18,7 @@ should_succeed
 [[ some_expression ]]
 should_fail
 ```
-#### Cleaner support for arrays - pass by reference
+#### Cleaner support for arrays and vars - pass by reference
 
 ```
 expect_var varname to_be 5
@@ -23,6 +28,8 @@ expect_array arrayname to_contain 5
 #### Unofficial bash strict mode
 
 http://redsymbol.net/articles/unofficial-bash-strict-mode/
+
+#### Travis-CI
 
 bash-spec
 =========

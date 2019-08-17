@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ##==================================================================================
 ## BDD-style testing framework for bash scripts.
-##.
+##
 ## expect variable [not] to_be value               Compare scalar values for equality
 ## expect variable [not] to_match regex            Regex match
 ## expect array [not] to_contain value             Look for a value in an array
@@ -14,7 +14,7 @@
 ## should_succeed
 ## [[ some_expression ]]
 ## should_fail
-##.
+##
 # Original Author: Dave Nicolette
 # Version 1.0.0 29 Jul 2014
 # Release
@@ -43,7 +43,7 @@ exec > "$result_file"
 function show_help {
     exec 1>&6 6>&-
     rm -f -- "$result_file"
-    grep "^##"  $BASH_SOURCE | sed 's/^##.//'
+    grep "^##"  $BASH_SOURCE | sed 's/^##//'
 }
 
 function output_results {
@@ -246,8 +246,8 @@ eval set -- "$TEMP"
 while true; do
   case "$1" in
     h | help ) show_help; exit 0 ;;
-    -- ) shift  ;;
-    * ) shift; break ;;
+    -- ) break ;;
+    * ) break ;;
   esac
 done
 

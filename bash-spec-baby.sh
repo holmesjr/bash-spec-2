@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 #==================================================================================
-# Minimal testing framework for bash scripts. 
-#
-# [[ some_expression ]]
-# should_succeed
-# [[ some_expression ]]
-# should_fail
-#
-# bash-spec Author: Dave Nicolette
-# Date: 29 Jul 2014
-# Modified by REA Group 2014
-# bash-spec-baby by keithy@consultant.com 03/2019
+## Minimal testing framework for bash scripts. 
+## usage:
+##
+## [[ some_expression ]]
+## should_succeed
+## [[ some_expression ]]
+## should_fail
+##
+## bash-spec Author: Dave Nicolette
+## Date: 29 Jul 2014
+## Modified by REA Group 2014
+## bash-spec-baby by keithy@consultant.com 03/2019
 #==================================================================================
 
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
@@ -29,7 +30,7 @@ exec > "$result_file"
 function show_help {
     exec 1>&6 6>&-
     rm -f -- "$result_file"
-    grep "^##"  $BASH_SOURCE | sed 's/^##.//'
+    grep "^##"  $BASH_SOURCE | sed 's/^##//'
 }
 
 function output_results {
