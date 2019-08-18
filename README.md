@@ -1,3 +1,36 @@
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![Build Status](https://travis-ci.com/keithy/bash-spec-2.svg?branch=master)](https://travis-ci.com/keithy/bash-spec-2)
+[![GitHub issues](https://img.shields.io/github/issues/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/issues)
+[![Latest Version](https://img.shields.io/github/release/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/releases)
+
+New for 2.1
+===========
+#### Supporting other coding styles/formats
+```
+old format: describe "title" "$( ... )"
+alt format: describe "title" && { ...  } (most readable but variables are not locally scoped)
+alt format2: describe "title" && ( ... ) (compromise?)
+```
+#### Assertions on expressions
+```
+[[ some_expression ]]
+should_succeed
+[[ some_expression ]]
+should_fail
+```
+#### Cleaner support for arrays and vars - pass by reference
+
+```
+expect_var varname to_be 5
+expect_array arrayname to_contain 5
+```
+
+#### Unofficial bash strict mode
+
+http://redsymbol.net/articles/unofficial-bash-strict-mode/
+
+#### Travis-CI
+
 bash-spec
 =========
 
@@ -65,7 +98,8 @@ When converted to lowercase
 
 ### Matchers
 
-Most of the matchers from the original bash-spec survived. The to_be_installed matcher went away, because it didn't work and wasn't super useful. It can be resurrected if someone cares enough.
+Most of the matchers from the original bash-spec survived. The to_be_installed matcher went away, 
+because it didn't work and wasn't super useful. It can be resurrected if someone cares enough.
 
 The available matchers are:
 
@@ -80,7 +114,10 @@ Each matcher has a negated mode (`not to_be`, `not to_match` etc)
 
 ### Blocks and the notably absent "before" syntax
 
-You'll have noticed that the command substitution syntax is used. This provides something similar to independent blocks, since each "$( )" spawns a subshell that doesn't affect other subshells or the parent shell. Each subshell also gets a copy of the environment in the parent shell, making a "before" syntax unnecessary.
+You'll have noticed that the command substitution syntax is used. 
+This provides something similar to independent blocks, since each "$( )" spawns a subshell that doesn't 
+affect other subshells or the parent shell. Each subshell also gets a copy of the environment in the parent shell, 
+making a "before" syntax unnecessary.
 
 The [bash-spec test suite](https://github.com/realestate-com-au/bash-spec-2/blob/master/test_bash-spec.sh) has some good examples of this.
 
@@ -92,3 +129,4 @@ bash-spec-2 works hand in hand with [stub.sh](https://github.com/jimeh/stub.sh) 
 
 - An equivalent for let blocks (memoized, lazy evaluated) might be useful
 - Proper nesting of the output would be cool
+

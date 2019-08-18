@@ -1,8 +1,57 @@
-#!  /bin/bash
+#!/usr/bin/env bash
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-. "$DIR/bash-spec.sh"
+. "$DIR/../bash-spec.sh"
+
+describe "The bash version test" "$(
+
+  context "When using bash (especially on MacOS X)" "$(
+
+    it "Version must be 4+" "$(
+     [[ "${BASH_VERSINFO[0]}" > "3" ]]
+	 should_succeed
+     )"
+  )"
+)"
+
+describe "Should_succeed" "$(
+  context "When testing conditional" "$(
+    it "reports success as pass" "$(
+      [[ "1" = "1" ]]
+      should_succeed
+    )"
+  )"
+  context "When testing condition fails" "$(
+    result="$(
+      [[ "1" = "2" ]]
+      should_succeed
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: '0(success)' | actual: '1(failed)'"
+    )"
+  )"
+)"
+
+describe "Should_fail" "$(
+  context "When testing conditional" "$(
+    it "reports fail as pass" "$(
+      [[ "1" = "2" ]]
+      should_fail
+    )"
+  )"
+  context "When testing condition fails" "$(
+    result="$(
+      [[ "1" = "1" ]]
+      should_fail
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: 'NOT 0(fail)' | actual: '0(succeeded)'"
+    )"
+  )"
+)"
 
 describe "The equality test" "$(
 
@@ -11,6 +60,15 @@ describe "The equality test" "$(
     it "Reports two scalar values are equal" "$(
       one="1"
       expect $one to_be 1
+    )"
+
+  )"
+
+  context "When a single value is passed (by ref)" "$(
+
+    it "Reports two scalar values are equal" "$(
+      one="1"
+      expect_var one to_be 1
     )"
 
   )"
@@ -146,6 +204,51 @@ describe "The array non-matcher" "$(
   )"
 
 )"
+
+describe "The array (passed by reference) matcher" "$(
+
+  declare -a arr=(1 2 3 4)
+
+  it "Reports an array contains a given value" "$(
+    expect_array arr to_contain 3
+  )"
+
+  context "When there is a failure" "$(
+
+    result="$(
+      expect_array arr to_contain 5
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: '5' | actual: '1 2 3 4'"
+    )"
+
+  )"
+
+)"
+
+describe "The array (passed by reference) non-matcher" "$(
+
+  declare -a arr=(1 2 3 4)
+
+  it "Reports an array does not contain a given value" "$(
+    expect_array arr not to_contain 5
+  )"
+
+  context "When there is a failure" "$(
+
+    result="$(
+      expect_array arr not to_contain 4
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: NOT '4' | actual: '1 2 3 4'"
+    )"
+
+  )"
+
+)"
+
 
 describe "The file existence matcher" "$(
 
