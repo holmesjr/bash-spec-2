@@ -57,9 +57,10 @@ function output_results {
   exit $?
 }
 
+# also supports glob match
 function _array_contains_ {
   for elem in "${_actual_[@]}"; do
-    [[ "$elem" == "$_expected_" ]] && return 0
+    [[ "$elem" == $_expected_ ]] && return 0
   done
   return 1
 }
@@ -232,7 +233,7 @@ function to_have_mode {
 
 # pattern - user supplied return variable name
 function capture {
-	mapfile -t "${!#}" < "$1"
+   mapfile -t "$1" < "$2"
 }
  
 #kph asks why?
