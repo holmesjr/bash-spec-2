@@ -57,12 +57,36 @@ function output_results {
   exit $?
 }
 
+# https://stackoverflow.com/a/50938224
+_array_test() {
+    # no argument passed
+    [[ $# -ne 1 ]] && echo 'Supply a variable name as an argument'>&2 && return 2
+    local var=$1
+    # use a variable to avoid having to escape spaces
+    local regex="^declare -[aA] ${var}(=|$)"
+    [[ $(declare -p "$var" 2> /dev/null) =~ $regex ]] && return 0
+}
+
+# array is passed by name
 # also supports glob match
-function _array_contains_ {
-  for elem in "${_actual_[@]}"; do
-    [[ "$elem" == $_expected_ ]] && return 0
+function _array_by_ref_contains_ {
+  _arr_=$_actual_
+  for i in "${!_arr_[@]}"; do
+    if [[ "${_arr_[i]}" == $_expected_ ]]; then
+      unset $_actual_[i]
+      return 0
+    fi
   done
   return 1
+}
+
+# also supports glob match
+function _array_contains_ {
+  _count_=0
+  for elem in "${_actual_[@]}"; do
+    [[ "$elem" == $_expected_ ]] && ((_count_++))
+  done
+  [ $_count_ -gt 0 ] && return 0 || return 1
 }
 
 function _negation_check_ {
@@ -152,7 +176,7 @@ function expect_var {
 function expect_array {
   _expected_=
   _negation_=false
-  declare -n _actual_=$1
+  declare -n _actual_="$1"
   until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
     shift
   done
@@ -193,6 +217,14 @@ function to_contain {
   _expected_="$1"
   _pass_=false
   _array_contains_ "$_expected_" "$_actual_" && _pass_=true
+  _negation_check_
+}
+
+function occurring {
+  _expected_="$1"
+  _pass_=false
+  _actual_=$_count_
+  [ $_count_ -eq $_expected_ ] && _pass_=true
   _negation_check_
 }
 

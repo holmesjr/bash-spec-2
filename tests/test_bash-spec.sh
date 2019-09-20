@@ -436,3 +436,26 @@ describe "Setting variables when nesting" "$(
   )"
 
 )"
+
+describe "The array matcher counts occurrences" "$(
+
+  declare -a arr=(1 2 3 3)
+
+  it "Reports an array contains a given value" "$(
+    expect "${arr[@]}" to_contain 3
+    occurring 2 times
+  )"
+
+  context "When there is a failure" "$(
+    
+    expect "${arr[@]}" to_contain 3
+    
+    result="$(
+        occurring 1 time
+    )"
+
+    it "Reports the actual and expected correctly" "$(
+      expect "$result" to_be "**** FAIL - expected: '1' | actual: '2'"
+    )"
+  )"
+)"
