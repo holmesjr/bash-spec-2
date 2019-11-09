@@ -1,7 +1,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.com/keithy/bash-spec-2.svg?branch=master)](https://travis-ci.com/keithy/bash-spec-2)
-[![GitHub issues](https://img.shields.io/github/issues/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/issues)
-[![Latest Version](https://img.shields.io/github/release/keithy/bash-spec-2.svg)](https://github.com/keithy/bash-spec-2/releases)
+[![GitHub issues](https://img.shields.io/github/issues/holmesjr/bash-spec-2.svg)](https://github.com/holmesjr/bash-spec-2/issues)
+[![Latest Version](https://img.shields.io/github/release/holmesjr/bash-spec-2.svg)](https://github.com/holmesjr/bash-spec-2/releases)
 
 New for 2.1
 ===========
