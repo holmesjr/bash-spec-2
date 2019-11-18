@@ -44,9 +44,15 @@ TEST_ENVIRONMENT = PYTHONPATH=$(THIS_FILE_DIR):$$PYTHONPATH PATH=$(THIS_FILE_DIR
 # TODO: Only write to intermediate files, if they exist already.
 # https://unix.stackexchange.com/q/405497/212862
 # There is still a race condition here. Maybe we should use sed for appending.
+
+# KPHMOD 20191210 - This makefile appears to add the current directory to the PATH, which
+# is NOT expected for many tests, particularly ones that check installation state using
+# "which/command -v" to determine if a binary (also in the current directory) is found on the path
+# Hence the addition of the XXXPATHXXX HACK below to nullify this behaviour in this instance.
+
 define RUN_ONE_TEST
 TARGET_FOR_$(1): $$(FIRST_MAKEFILE_DIR)/$(1)
-	+@export PATH=$$$$(pwd):$$$$PATH; \
+	+@export XXXPATHXXX=$$$$(pwd):$$$$PATH; \
           if [ -e $$(FIRST_MAKEFILE_DIR)/$$(executedTestsName) ]; then \
              echo $$< >> $$(FIRST_MAKEFILE_DIR)/$$(executedTestsName); \
           fi; \

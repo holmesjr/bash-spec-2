@@ -14,7 +14,7 @@ for test in [^_]*.sh;
 do
    if [[ -x "$test" ]]; then
        echo ">$test"
-       out=$($test)
+       out=$(./"$test")
        [[ $? != 0 ]] && fails=$((fails + 1))
        [ "$1" == "-v" ] && echo "$out"
    fi

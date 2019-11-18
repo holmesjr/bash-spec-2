@@ -61,7 +61,6 @@ describe "The equality test" "$(
       one="1"
       expect $one to_be 1
     )"
-
   )"
 
   context "When a single value is passed (by ref)" "$(
@@ -70,7 +69,6 @@ describe "The equality test" "$(
       one="1"
       expect_var one to_be 1
     )"
-
   )"
 
   context "When a multi word value is passed" "$(
@@ -79,7 +77,6 @@ describe "The equality test" "$(
       string="This is a string."
       expect "$string" to_be "This is a string."
     )"
-
   )"
 
   context "When a multi word (multi-line) value is passed" "$(
@@ -90,7 +87,6 @@ describe "The equality test" "$(
                              "a multi-line" \
                              "output string."
     )"
-
   )"
 
   context "When there is a failure" "$(
@@ -102,9 +98,7 @@ describe "The equality test" "$(
     it "Reports the actual and expected correctly" "$(
       expect "$result" to_be "**** FAIL - expected: 'Something else' | actual: 'Test text'"
     )"
-
   )"
-
 )"
 
 describe "The inequality test" "$(
@@ -452,9 +446,15 @@ describe "The array matcher counts occurrences" "$(
 
   declare -a arr=(1 2 3 3)
 
+  it "Reports an array contains a given value (any number of times)" "$(
+    expect "${arr[@]}" to_contain 3
+  )"
+  
   it "Reports an array contains a given value (2 times)" "$(
     expect "${arr[@]}" to_contain 3 occurring 2 times
   )"
+  
+  
 
   context "When there is a failure" "$(
     
@@ -463,7 +463,7 @@ describe "The array matcher counts occurrences" "$(
     )"
 
     it "Reports the actual and expected correctly" "$(
-      expect "$result" to_be "**** FAIL - expected: '3 (x1)' | actual: '1 2 3 3'"
+      expect "$result" to_be "**** FAIL - expected: '3 (x1 found x2)' | actual: '1 2 3 3'"
     )"
   )"
 )"

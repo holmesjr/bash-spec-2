@@ -10,13 +10,20 @@ cd  test_run
 
 describe "_run.sh - bulk CI runner" && {
   context "Run Locally" && {
-    it "expect_var works" && {
-      a="test"
-      expect_var a to_be "test"
-    } 
+
+    it "expect_var" && {
+      a="testing"
+      expect_var a to_be "testing"
+
+      a=$(echo "echoed")
+      expect_var a to_be "echoed"
+    }
+
     it "expect_array works" && {
       a=("test1")
       a+=("test2")
+
+      expect_var a to_contain "test1"
       expect_array a to_contain "test1"
       expect_array a to_contain "test2"
       expect_array a not to_contain "test3"

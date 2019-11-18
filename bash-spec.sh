@@ -32,6 +32,7 @@ set -uo pipefail
 IFS=$'\n\t'
 shopt -s nullglob # make sure globs are empty arrays if nothing is found
 
+LOUD=${LOUD:=false}
 result_file=$(mktemp)
 
 _passed_=0
@@ -86,8 +87,12 @@ function _array_contains_ {
   for elem in "${_actual_[@]}"; do
     [[ "$elem" == $_expected_ ]] && ((_count_++))
   done
-  [ $_count_ -eq $_times_ ] && return 0
-  [ $_count_ -gt 0 ] && _expected_="$_expected_ (x$_times_)" && return 1
+	if [ -n "$_times_" ]; then
+  		[ $_count_ -eq $_times_ ] && return 0
+  		[ $_count_ -gt 0 ] && _expected_="$_expected_ (x$_times_ found x$_count_)" && return 1
+	else
+		[ $_count_ -gt 0 ] && return 0 || return 1
+	fi
 }
 
 function _negation_check_ {
@@ -157,18 +162,21 @@ function expect {
   _negation_=false
   _pass_=false
   declare -a _actual_
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
     _actual_+=("$1")
     shift
   done
+  #echo $( IFS=$'|'; echo "$*" )
   "$@"
 }
 
 function expect_var {
   _expected_=
   _negation_=false
-  declare -n _actual_=$1
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  declare -a _actual_
+  declare -n ref="$1"
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
+    _actual_+=("${!1}")
     shift
   done
   "$@"
@@ -178,7 +186,7 @@ function expect_array {
   _expected_=
   _negation_=false
   declare -n _actual_=$1
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
     shift
   done
   "$@"
@@ -216,7 +224,7 @@ function to_match {
 
 function to_contain {
   _expected_="$1"
-  _times_="${3:-1}"
+  _times_="${3:-}"
   _pass_=false
   _array_contains_ "$_expected_" "$_actual_" "$_times_" && _pass_=true
   _negation_check_
