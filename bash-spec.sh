@@ -188,8 +188,21 @@ function not {
   "$@"
 }
 
+# function to_be {
+#   _expected_="$1"
+#   _pass_=false
+#   [[ "${_actual_[0]}" == "$_expected_" ]] && _pass_=true
+#   _negation_check_
+# }
+
 function to_be {
   _expected_="$1"
+  shift
+  NL=$'\n'
+  while [[ ! -z ${1+x} ]]; do
+    _expected_+="$NL$1"
+    shift
+  done
   _pass_=false
   [[ "${_actual_[0]}" == "$_expected_" ]] && _pass_=true
   _negation_check_

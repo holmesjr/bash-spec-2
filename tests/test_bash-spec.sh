@@ -82,6 +82,17 @@ describe "The equality test" "$(
 
   )"
 
+  context "When a multi word (multi-line) value is passed" "$(
+
+    it "Reports two scalar values are equal" "$(
+      string=$'This is\na multi-line\noutput string.'
+      expect "$string" to_be "This is" \
+                             "a multi-line" \
+                             "output string."
+    )"
+
+  )"
+
   context "When there is a failure" "$(
 
     result="$(
