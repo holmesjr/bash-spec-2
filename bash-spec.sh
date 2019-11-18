@@ -86,7 +86,8 @@ function _array_contains_ {
   for elem in "${_actual_[@]}"; do
     [[ "$elem" == $_expected_ ]] && ((_count_++))
   done
-  [ $_count_ -gt 0 ] && return 0 || return 1
+  [ $_count_ -eq $_times_ ] && return 0
+  [ $_count_ -gt 0 ] && _expected_="$_expected_ (x$_times_)" && return 1
 }
 
 function _negation_check_ {
@@ -176,7 +177,7 @@ function expect_var {
 function expect_array {
   _expected_=
   _negation_=false
-  declare -n _actual_="$1"
+  declare -n _actual_=$1
   until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
     shift
   done
@@ -188,21 +189,8 @@ function not {
   "$@"
 }
 
-# function to_be {
-#   _expected_="$1"
-#   _pass_=false
-#   [[ "${_actual_[0]}" == "$_expected_" ]] && _pass_=true
-#   _negation_check_
-# }
-
 function to_be {
-  _expected_="$1"
-  shift
-  NL=$'\n'
-  while [[ ! -z ${1+x} ]]; do
-    _expected_+="$NL$1"
-    shift
-  done
+  _expected_=$( IFS=$'\n'; echo "$*" )
   _pass_=false
   [[ "${_actual_[0]}" == "$_expected_" ]] && _pass_=true
   _negation_check_
@@ -228,16 +216,9 @@ function to_match {
 
 function to_contain {
   _expected_="$1"
+  _times_="${3:-1}"
   _pass_=false
-  _array_contains_ "$_expected_" "$_actual_" && _pass_=true
-  _negation_check_
-}
-
-function occurring {
-  _expected_="$1"
-  _pass_=false
-  _actual_=$_count_
-  [ $_count_ -eq $_expected_ ] && _pass_=true
+  _array_contains_ "$_expected_" "$_actual_" "$_times_" && _pass_=true
   _negation_check_
 }
 

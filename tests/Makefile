@@ -1,7 +1,7 @@
 
 # usage: make check
 
-TESTS ?= $(wildcard [^_]*.sh)
+TESTS ?= $(wildcard test*.sh)
 
 include Makefile.test
 
