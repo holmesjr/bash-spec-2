@@ -57,11 +57,41 @@ function output_results {
   exit $?
 }
 
-function _array_contains_ {
-  for elem in "${_actual_[@]}"; do
-    [[ "$elem" == "$_expected_" ]] && return 0
+# https://stackoverflow.com/a/50938224
+_array_test() {
+    # no argument passed
+    [[ $# -ne 1 ]] && echo 'Supply a variable name as an argument'>&2 && return 2
+    local var=$1
+    # use a variable to avoid having to escape spaces
+    local regex="^declare -[aA] ${var}(=|$)"
+    [[ $(declare -p "$var" 2> /dev/null) =~ $regex ]] && return 0
+}
+
+# array is passed by name
+# also supports glob match
+function _array_by_ref_contains_ {
+  _arr_=$_actual_
+  for i in "${!_arr_[@]}"; do
+    if [[ "${_arr_[i]}" == $_expected_ ]]; then
+      unset $_actual_[i]
+      return 0
+    fi
   done
   return 1
+}
+
+# also supports glob match
+function _array_contains_ {
+  _count_=0
+  for elem in "${_actual_[@]}"; do
+    [[ "$elem" == $_expected_ ]] && ((_count_++))
+  done
+	if [ -n "$_times_" ]; then
+  		[ $_count_ -eq $_times_ ] && return 0
+  		[ $_count_ -gt 0 ] && _expected_="$_expected_ (x$_times_ found x$_count_)" && return 1
+	else
+		[ $_count_ -gt 0 ] && return 0 || return 1
+	fi
 }
 
 function _negation_check_ {
@@ -131,18 +161,21 @@ function expect {
   _negation_=false
   _pass_=false
   declare -a _actual_
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
     _actual_+=("$1")
     shift
   done
+  #echo $( IFS=$'|'; echo "$*" )
   "$@"
 }
 
 function expect_var {
   _expected_=
   _negation_=false
-  declare -n _actual_=$1
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  declare -a _actual_
+  declare -n ref="$1"
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
+    _actual_+=("${!1}")
     shift
   done
   "$@"
@@ -152,7 +185,7 @@ function expect_array {
   _expected_=
   _negation_=false
   declare -n _actual_=$1
-  until [[ "${1:0:3}" == to_ || "$1" == not || -z "$1" ]]; do
+  until [[ "${1:0:3}" == to_ || "$1" == not || -z ${1+x} ]]; do
     shift
   done
   "$@"
@@ -164,7 +197,7 @@ function not {
 }
 
 function to_be {
-  _expected_="$1"
+  _expected_=$( IFS=$'\n'; echo "$*" )
   _pass_=false
   [[ "${_actual_[0]}" == "$_expected_" ]] && _pass_=true
   _negation_check_
@@ -190,8 +223,9 @@ function to_match {
 
 function to_contain {
   _expected_="$1"
+  _times_="${3:-}"
   _pass_=false
-  _array_contains_ "$_expected_" "$_actual_" && _pass_=true
+  _array_contains_ "$_expected_" "$_actual_" "$_times_" && _pass_=true
   _negation_check_
 }
 
@@ -232,7 +266,7 @@ function to_have_mode {
 
 # pattern - user supplied return variable name
 function capture {
-	mapfile -t "${!#}" < "$1"
+   mapfile -t "$1" < "$2"
 }
  
 #kph asks why?

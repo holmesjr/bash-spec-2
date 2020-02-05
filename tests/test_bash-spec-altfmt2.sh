@@ -79,7 +79,17 @@ describe "The equality test" && (
     )
   )
 
-  context "When there is a failure" && (
+   context "When a multi word (multi-line) value is passed" && (
+
+    it "Reports two scalar values are equal" && (
+      string=$'This is\na multi-line\noutput string.'
+      expect "$string" to_be "This is" \
+                             "a multi-line" \
+                             "output string."
+    )
+  )
+  
+   context "When there is a failure" && (
 
     result="$(
       expect "Test text" to_be "Something else"
@@ -402,5 +412,29 @@ describe "Setting variables when nesting" && (
 
   it "Does not get affected by values set in inner nesting earlier on" && (
     expect "$test_var" to_be "first value"
+  )
+)
+
+describe "The array matcher counts occurrences" && (
+
+  declare -a arr=(1 2 3 3)
+
+  it "Reports an array contains a given value (any number of times)" && (
+    expect "${arr[@]}" to_contain 3
+  )
+  
+  it "Reports an array contains a given value (2 times)" && (
+    expect "${arr[@]}" to_contain 3 occurring 2 times
+  )
+
+  context "When there is a failure" && (
+    
+    result=$(
+        expect "${arr[@]}" to_contain 3 occurring 1 time
+    )
+
+    it "Reports the actual and expected correctly" && (
+      expect "$result" to_be "**** FAIL - expected: '3 (x1 found x2)' | actual: '1 2 3 3'"
+    )
   )
 )
