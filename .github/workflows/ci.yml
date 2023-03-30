@@ -2,7 +2,7 @@ name: Makefile Tests
 
 on:
   push:
-    branches: [ "master", "beta" ]
+    branches: [ "mast "beta" ]
   pull_request:
     branches: [ "master" ]
 
