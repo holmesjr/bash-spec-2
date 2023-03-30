@@ -1,12 +1,10 @@
-name: CI
+name: Makefile Tests
 
 on:
   push:
-    branches:
-    - master
+    branches: [ "master", "beta" ]
   pull_request:
-    branches:
-    - master
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -14,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Run tests
-      run: make -C tests
+    - uses: actions/checkout@v3
+
+    - name: Verify Bash Specs (makefile)
+      run: make -C tests check
+
+    - name: Verify Bash Specs (shell runner)
+      run: tests/_run.sh

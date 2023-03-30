@@ -32,6 +32,7 @@ set -uo pipefail
 IFS=$'\n\t'
 shopt -s nullglob # make sure globs are empty arrays if nothing is found
 
+LOUD=${LOUD:-true}
 result_file=$(mktemp)
 
 _passed_=0
