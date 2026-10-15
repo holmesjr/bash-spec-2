@@ -10,12 +10,12 @@ echo "Working Directory:" $(pwd)
 #echo "Which bash" $(which bash)
 
 fails=0
-for test in */test*.sh;
+for test in */test*.sh */*spec.sh;
 do
    if [[ -x "$test" ]]; then
        echo ">$test"      
        out=$(cd "${test%/*}" ; ./"${test##*/}")
-       [[ $? != 0 ]] && fails=$((fails + 1))
+       [[ $? != 0 ]] && fails=$((fails + 1)) && echo "Failed ^^"
        [ "$1" == "-v" ] && echo "$out"
    fi
 done

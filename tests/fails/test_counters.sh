@@ -15,6 +15,7 @@ describe "A simple test" "$(
   )"
 
   it "Fails with this" "$(
+    printf "EXPECTED"
     expect "1" to_be "2"
   )"
 
