@@ -434,6 +434,7 @@ describe "Setting variables when nesting" && {
   }
 
   it "Does not get affected by values set in inner nesting earlier on" && {
+    printf "EXPECTED"
     expect "$test_var" to_be "first value"
   }
 

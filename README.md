@@ -3,6 +3,81 @@
 [![GitHub issues](https://img.shields.io/github/issues/holmesjr/bash-spec-2.svg)](https://github.com/holmesjr/bash-spec-2/issues)
 [![Latest Version](https://img.shields.io/github/release/holmesjr/bash-spec-2.svg)](https://github.com/holmesjr/bash-spec-2/releases)
 
+bash-spec
+=========
+
+This is a modified version of bash-spec from https://github.com/neopragma/bash-spec. The most important changes are:
+
+- The "describe" and "context" syntaxes are available
+- The "it" syntax has changed
+- All the above syntaxes are nestable and work via command substitution (i.e. `"$( commands here )"` )
+- A few bugs around failure messages have been fixed (with their own tests, of course)
+
+New in 2.2
+==========
+#### Optional `tearDown` function for per-spec cleanup
+```
+function tearDown {
+  rm -rf "$sandbox"
+}
+```
+If the spec defines a function named `tearDown`, bash-spec invokes
+it on EXIT, before printing the SUMMARY line. This avoids the
+common mistake of redeclaring the EXIT trap and thereby clobbering
+bash-spec's own `output_results` handler. Wrapped in `set +e`, so a
+failing teardown doesn't suppress the summary. If `tearDown` is not
+defined, the hook is a no-op — existing specs need no change.
+
+#### `to_have_mode` works on macOS
+The `to_have_mode` matcher previously extracted the symbolic mode
+with `cut -f 3 -d ' '` on the `stat` output, which on BSD/macOS
+picked up the wrong field (the `File:` header word) and silently
+made the matcher return the wrong result. Replaced with an awk
+extraction of the `Access: (0641/-rw-r----x)` line. Linux behaviour
+unchanged.
+
+#### `should_succeed` / `should_fail` accept an optional message
+```
+[[ some_command ]]
+should_succeed "Optional Message On Failure"
+
+[[ some_command ]]
+should_fail "Optional Message On Success"
+```
+When the assertion fails (the unexpected outcome), the message is
+displayed alongside the failure line. Pass lines stay clean. This
+makes the FAIL output self-explanatory without cluttering the
+happy path:
+```
+         PASS
+**** FAIL - Optional Message On Failure
+```
+
+#### Per-suite WARNINGS via `_pretty_run_all.sh`
+A new runner, `_pretty_run_all.sh`, ships alongside
+`_run_all.sh`. It runs the same test glob but adds:
+
+- a green ✔ / red ✘ index per suite
+- a box-drawing summary block (`═══ ... Ran N specs ... ═══`)
+- a per-suite WARNINGS section, populated by lines from each
+  spec's stdout that begin with `INFO:`, `WARN:`, or
+  `ERROR:` (or any prefix containing the words — e.g.
+  `WARN_NETWORK_UNREACHABLE` is also matched). Each suite's
+  banners appear right under its own index line, indented 4
+  spaces, so the visual hierarchy is:
+
+  ```
+    ✔  tests/test-thing.sh                                (3/3)
+    ✘  tests/test_other.sh                                 (0/2) rc=1
+        »   INFO: starting the demo
+        ⚠   WARN: this matcher is deprecated
+        ✖   ERROR: something went wrong
+  ```
+
+  Verbosity is controlled by `VERBOSE=true` (default:
+  summarised index only). Exit code is the number of
+  failing suites, suitable for CI gating.
+
 New for 2.1
 ===========
 #### Supporting other coding styles/formats
@@ -30,16 +105,6 @@ expect_array arrayname to_contain 5
 http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 #### Travis-CI
-
-bash-spec
-=========
-
-This is a modified version of bash-spec from https://github.com/neopragma/bash-spec. The most important changes are:
-
-- The "describe" and "context" syntaxes are available
-- The "it" syntax has changed
-- All the above syntaxes are nestable and work via command substitution (i.e. `"$( commands here )"` )
-- A few bugs around failure messages have been fixed (with their own tests, of course)
 
 # Usage
 

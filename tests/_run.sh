@@ -15,7 +15,7 @@ do
    if [[ -x "$test" ]]; then
        echo ">$test"
        out=$(./"$test")
-       [[ $? != 0 ]] && fails=$((fails + 1))
+       [[ $? != 0 ]] && fails=$((fails + 1)) && echo "Failed ^^"
        [ "$1" == "-v" ] && echo "$out"
    fi
 done

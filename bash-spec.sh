@@ -4,16 +4,28 @@
 ##
 ## expect variable [not] to_be value               Compare scalar values for equality
 ## expect variable [not] to_match regex            Regex match
-## expect array [not] to_contain value             Look for a value in an array
+## expect array [not] to_contain "*bash\ spec*"   Look for a value in an array (glob match)
 ## expect_array arrayname [not] to_contain value   Look for a value in an array (by ref)
-## expect_var variablename [not] to_contain value  Look for a value in a variable (by ref)
+## expect_var variablename [not] to_contain "*value*"  Look for a value in a variable (glob match)
 ## expect filename [not] to_exist                  Verify file existence
 ## expect filename [not] to_have_mode modestring   Verify file mode (permissions)
 ## expect [not] to_be_true condition               Verify exit mode as boolean
 ## [[ some_expression ]]
-## should_succeed
+## should_succeed "Optional Message On Failure"
 ## [[ some_expression ]]
-## should_fail
+## should_fail "Optional Message On Success"
+##
+## tearDown function_name                       Register a cleanup function
+##                                                to run before the spec
+##                                                exits. Use this instead
+##                                                of declaring your own
+##                                                EXIT trap, which would
+##                                                clobber bash-spec's
+##                                                output_results handler.
+##                                                Example:
+##                                                  function tearDown {
+##                                                    rm -rf "$sandbox"
+##                                                  }
 ##
 # Original Author: Dave Nicolette
 # Version 1.0.0 29 Jul 2014
@@ -132,6 +144,7 @@ function pass {
 }
 
 function fail {
+  [[ -n "${_msg_:-}" ]] && echo "**** FAIL - ${_msg_}" && _msg_="" && return
   echo "**** FAIL - expected:$( if [[ "$_negation_" == true ]]; then echo ' NOT'; fi; ) '$_expected_' | actual: '${_actual_[@]}'"
 }
 
@@ -140,7 +153,8 @@ function should_succeed {
   _expected_=0
   _negation_=false
   _pass_=false
-  [[ $_actual_ == $_expected_ ]] && _pass_=true
+  _msg_=""
+  [[ $_actual_ == $_expected_ ]] && _pass_=true || _msg_="${1:-}"
   _expected_="0(success)"
   _actual_="$_actual_(failed)"
   _negation_check_
@@ -151,7 +165,8 @@ function should_fail {
   _expected_=0
   _negation_=false
   _pass_=true
-  [[ $_actual_ == $_expected_ ]] && _pass_=false
+  _msg_=""
+  [[ $_actual_ == $_expected_ ]] && _pass_=false && _msg_="${1:-}"
   _expected_="NOT 0(fail)"
   _actual_="0(succeeded)"
   _negation_check_
@@ -256,7 +271,11 @@ function to_have_mode {
     if [[ "$_os_" == Linux ]]; then
       _actual_="$(stat -c %A $_fullname_)"
     else
-      _actual_="$(stat $_fullname_ | cut -f 3 -d ' ')"
+      # BSD/macOS stat: extract the symbolic mode from the Access line.
+      # The `cut -f 3 -d ' '` form used previously picked up the wrong
+      # field because BSD stat emits multi-line output with leading
+      # header words like "File:" and "Size:" that have no spaces.
+      _actual_="$(stat "$_fullname_" | awk '/^Access:/{ match($0,/\(([0-9]+\/)?([-rwxdlcst]+)\)/,a); print a[2]; exit }')"
     fi
     [[ "$_actual_" =~ "$_expected_" ]] && _pass_=true
   else
@@ -287,3 +306,15 @@ while true; do
 done
 
 trap output_results EXIT
+
+# Optional teardown hook. If the spec defines a function named
+# `tearDown`, invoke it before the summary so the spec doesn't
+# have to clobber our EXIT trap. Wrapped in `set +e` so a failing
+# teardown doesn't suppress the SUMMARY line. If `tearDown` isn't
+# defined, this is a no-op.
+#
+# To avoid clobbering user teardown if the spec also sets its own
+# EXIT trap, we wrap output_results in a sub-trap rather than
+# replacing it. Order: user teardown -> output_results.
+_teardown_set='set +e; if declare -F tearDown >/dev/null; then tearDown; fi; output_results'
+eval "trap '$_teardown_set' EXIT"
